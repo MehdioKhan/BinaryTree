@@ -1,0 +1,82 @@
+__author__ = "Mahdi Khanmohammadi"
+'''
+This code accepts Inorder and Preorder form of a Binary Tree
+and prints Postorder form
+'''
+#Binary Tree Node
+class Node:
+    def __init__(self,key):
+        self.left = None
+        self.right = None
+        self.data = key
+
+ #Prints Inorder form
+def inOrder(t=None):
+  if t is not None:
+    inOrder(t.left)
+    print(t.data,end="")
+    inOrder(t.right)
+
+#Prints Postorder form
+def postOrder(t=None):
+  if t is not None:
+    postOrder(t.left)
+    postOrder(t.right)
+    print(t.data,end="")
+
+#Prints Preorder form
+def preOrder(t=None):
+  if t is not None:
+    print(t.data,end="")
+    postOrder(t.left)
+    postOrder(t.right)
+
+#Function for creating Tree from Preorder and Inorder form
+def func(inorder,preorder,n,out,index):
+  '''
+  Explain argumans:
+    inorder : Contains Inorder from of tree
+    preorder : Contains Preorder from of tree
+    n : contains length of Inorder form
+    out : Is a boolean list with lenght of len(preorder) that at the first all of elements ar False.
+          After processing every element of Preorder , it's index in the list becomes True.
+    index : Is index of the element that is processing.
+  '''
+  t=Node(None)
+  t.data=preorder[index]
+  out[index]=True
+  t.right=None
+  t.left=None
+  indexi=inorder.find(preorder[index])
+  if(indexi!=-1):
+    leftin=inorder[0:indexi]
+    rightin=inorder[indexi+1:n]
+    if len(leftin)!=0:
+      index+=1
+      t.left=func(leftin,preorder,len(leftin),out,index)
+    if len(rightin)!=0:
+      while out[index]:
+        index+=1
+      t.right=func(rightin,preorder,len(rightin),out,index)
+      index+=1
+    return t
+  else:
+    return t
+
+def main():
+  inor=input("Enter Inorder form (Leave blank for default value): ")
+  if inor!='':
+    preor=input("Enter Preorder form (Leave blank for default value): ")
+  else:
+    inor="dbheiafcg"
+    preor="abdehicfg"
+
+  l=[]
+  for i in range(0,len(preor)):
+    l.append(False)
+  print("Printing Postorder form for : Inorder = ",inor,"  Preorder = ",preor)
+  print("Postorder = ",end=" ")
+  postOrder(func(inor,preor,len(preor),l,0))
+  print()
+
+main()
